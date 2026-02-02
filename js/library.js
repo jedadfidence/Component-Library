@@ -537,10 +537,15 @@ function initializeGlobalBackgroundPicker() {
    --------------------------------------------------------------------------- */
 
 function initializeColorSwatchCopy() {
-  const hexCodes = document.querySelectorAll('.color-swatch__hex');
+  const swatches = document.querySelectorAll('.color-swatch');
 
-  hexCodes.forEach(function(hex) {
-    hex.addEventListener('click', function() {
+  swatches.forEach(function(swatch) {
+    swatch.style.cursor = 'pointer';
+
+    swatch.addEventListener('click', function(e) {
+      const hex = swatch.querySelector('.color-swatch__hex');
+      if (!hex) return;
+
       const text = hex.textContent;
 
       if (navigator.clipboard && navigator.clipboard.writeText) {
