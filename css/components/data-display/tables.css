@@ -1,0 +1,49 @@
+/* ---------------------------------------------------------------------------
+   TABLES
+   --------------------------------------------------------------------------- */
+
+.table-container {
+  overflow-x: auto;
+  border-radius: 24px;
+  border: 1px solid #E4EFFE;
+  background: #FFFFFF;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-base);
+}
+
+.table th,
+.table td {
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  border: 1px solid #E4EFFE;
+}
+
+.table th {
+  font-weight: var(--font-semibold);
+  color: var(--color-neutral-700);
+  background: #F5F9FF;
+}
+
+.table td {
+  color: var(--color-neutral-800);
+  background: #FFFFFF;
+}
+
+.table tbody tr:hover td {
+  background: #F5F9FF;
+}
+
+/* Striped table */
+.table--striped tbody tr:nth-child(even) td {
+  background: #F5F9FF;
+}
+
+/* Compact table */
+.table--compact th,
+.table--compact td {
+  padding: var(--space-2) var(--space-3);
+}

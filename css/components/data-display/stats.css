@@ -1,0 +1,57 @@
+/* ---------------------------------------------------------------------------
+   STATS / METRICS
+   --------------------------------------------------------------------------- */
+
+.stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat__label {
+  font-size: var(--text-sm);
+  color: var(--color-neutral-500);
+  margin-bottom: var(--space-1);
+}
+
+.stat__value {
+  font-size: var(--text-3xl);
+  font-weight: var(--font-bold);
+  color: var(--color-neutral-800);
+  line-height: var(--leading-tight);
+}
+
+.stat__change {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  margin-top: var(--space-1);
+}
+
+.stat__change--positive {
+  color: var(--color-success-600);
+}
+
+.stat__change--negative {
+  color: var(--color-error-600);
+}
+
+/* Stat card */
+.stat-card {
+  padding: var(--space-4);
+  background: var(--glass-bg-strong);
+  border: var(--border-width-thin) solid var(--color-neutral-200);
+  border-radius: var(--radius-lg);
+}
+
+.stat-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: var(--color-primary-100);
+  color: var(--color-primary-600);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-3);
+}

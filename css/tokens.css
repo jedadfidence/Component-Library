@@ -1,0 +1,205 @@
+/* ==========================================================================
+   ADFIDENCE DESIGN TOKENS
+   Core design system variables - edit these to change the entire system
+   ========================================================================== */
+
+:root {
+  /* -------------------------------------------------------------------------
+     COLOR PALETTE
+     ------------------------------------------------------------------------- */
+
+  /* Primary - Blue */
+  --color-primary-50: #D3E4FD;
+  --color-primary-100: #E4EFFE;
+  --color-primary-500: #4586F7;
+  --color-primary-600: #214DA5;
+  --color-primary-800: #1F356F;
+
+  /* Neutral - Gray scale */
+  --color-neutral-0: #FFFFFF;
+  --color-neutral-50: #F8F9FB;
+  --color-neutral-100: #F4F5F8;
+  --color-neutral-200: #E6E9EE;
+  --color-neutral-300: #D1D5E1;
+  --color-neutral-400: #99A2B5;
+  --color-neutral-500: #656E85;
+  --color-neutral-600: #454D62;
+  --color-neutral-700: #2C3554;
+  --color-neutral-800: #141930;
+  --color-neutral-900: #050B19;
+
+  /* Secondary - Blue/Indigo */
+  --color-secondary-blue-100: #E4E2FC;
+  --color-secondary-blue-500: #7A6FF6;
+
+  /* Secondary - Purple */
+  --color-secondary-purple-100: #F3DDFA;
+  --color-secondary-purple-500: #C153E8;
+
+  /* Secondary - Pink */
+  --color-secondary-pink-100: #F8DBEC;
+  --color-secondary-pink-500: #DC4CA2;
+
+  /* Secondary - Teal */
+  --color-secondary-teal-100: #E0F1EE;
+  --color-secondary-teal-500: #62BAAC;
+
+  /* Secondary - Coral */
+  --color-secondary-coral-100: #FFE6E2;
+  --color-secondary-coral-500: #FF8070;
+
+  /* Secondary - Violet */
+  --color-secondary-violet-100: #D5BBF3;
+  --color-secondary-violet-500: #731DD8;
+
+  /* Semantic - Success */
+  --color-success-50: #EDFAF4;
+  --color-success-100: #D9F3E9;
+  --color-success-500: #00B16C;
+  --color-success-600: #009A5E;
+  --color-success-700: #008450;
+
+  /* Semantic - Warning */
+  --color-warning-50: #FDF6E9;
+  --color-warning-100: #F9E4BB;
+  --color-warning-500: #E5A34F;
+  --color-warning-600: #D4922E;
+  --color-warning-700: #B87D1F;
+
+  /* Semantic - Error */
+  --color-error-50: #FEF5F4;
+  --color-error-100: #FAE2E0;
+  --color-error-500: #DF3C32;
+  --color-error-600: #C8352C;
+  --color-error-700: #B02E26;
+
+  /* Semantic - Info */
+  --color-info-50: #F3F2FE;
+  --color-info-100: #E4E2FC;
+  --color-info-500: #7A6FF6;
+  --color-info-600: #6358E0;
+  --color-info-700: #5248C9;
+
+  /* -------------------------------------------------------------------------
+     TYPOGRAPHY
+     ------------------------------------------------------------------------- */
+
+  --font-family-sans: 'Google Sans Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-family-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, monospace;
+
+  /* Font Sizes */
+  --text-xs: 0.75rem;      /* 12px */
+  --text-sm: 0.8125rem;    /* 13px */
+  --text-base: 0.875rem;   /* 14px */
+  --text-md: 1rem;         /* 16px */
+  --text-lg: 1.125rem;     /* 18px */
+  --text-xl: 1.25rem;      /* 20px */
+  --text-2xl: 1.5rem;      /* 24px */
+  --text-3xl: 1.875rem;    /* 30px */
+  --text-4xl: 2.25rem;     /* 36px */
+
+  /* Font Weights */
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+
+  /* Line Heights */
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+
+  /* Letter Spacing */
+  --tracking-tight: -0.025em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.025em;
+
+  /* -------------------------------------------------------------------------
+     SPACING
+     ------------------------------------------------------------------------- */
+
+  --space-0: 0;
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+  --space-20: 5rem;     /* 80px */
+  --space-24: 6rem;     /* 96px */
+
+  /* -------------------------------------------------------------------------
+     BORDERS & RADIUS
+     ------------------------------------------------------------------------- */
+
+  --radius-none: 0;
+  --radius-sm: 0.75rem;   /* 12px */
+  --radius-md: 1.5rem;    /* 24px */
+  --radius-lg: 1.5rem;    /* 24px */
+  --radius-xl: 1.5rem;    /* 24px */
+  --radius-2xl: 1.5rem;   /* 24px */
+  --radius-full: 9999px;
+
+  --border-width-thin: 1px;
+  --border-width-medium: 2px;
+  --border-width-thick: 3px;
+
+  /* -------------------------------------------------------------------------
+     SHADOWS
+     ------------------------------------------------------------------------- */
+
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+  /* Colored shadows for depth */
+  --shadow-primary: 0 4px 14px 0 rgba(59, 130, 246, 0.25);
+  --shadow-success: 0 4px 14px 0 rgba(16, 185, 129, 0.25);
+  --shadow-error: 0 4px 14px 0 rgba(239, 68, 68, 0.25);
+
+  /* -------------------------------------------------------------------------
+     GLASSMORPHISM
+     ------------------------------------------------------------------------- */
+
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-bg-strong: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --glass-blur: 12px;
+  --glass-blur-strong: 20px;
+
+  /* -------------------------------------------------------------------------
+     TRANSITIONS
+     ------------------------------------------------------------------------- */
+
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+  --duration-slow: 300ms;
+  --duration-slower: 400ms;
+
+  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  /* -------------------------------------------------------------------------
+     Z-INDEX SCALE
+     ------------------------------------------------------------------------- */
+
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --z-toast: 1080;
+}

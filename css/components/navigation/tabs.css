@@ -1,0 +1,63 @@
+/* ---------------------------------------------------------------------------
+   TABS
+   --------------------------------------------------------------------------- */
+
+.tabs {
+  display: flex;
+  gap: var(--space-1);
+  border-bottom: var(--border-width-thin) solid var(--color-neutral-200);
+}
+
+.tab {
+  position: relative;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  color: var(--color-neutral-500);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-default);
+}
+
+.tab:hover {
+  color: var(--color-neutral-700);
+}
+
+.tab--active {
+  color: var(--color-primary-600);
+}
+
+.tab--active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--color-primary-500);
+  border-radius: var(--radius-full) var(--radius-full) 0 0;
+}
+
+/* Pill tabs */
+.tabs--pills {
+  gap: var(--space-2);
+  border-bottom: none;
+  background: var(--color-neutral-100);
+  padding: var(--space-1);
+  border-radius: var(--radius-lg);
+}
+
+.tabs--pills .tab {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+}
+
+.tabs--pills .tab--active {
+  background: var(--color-neutral-0);
+  box-shadow: var(--shadow-sm);
+}
+
+.tabs--pills .tab--active::after {
+  display: none;
+}

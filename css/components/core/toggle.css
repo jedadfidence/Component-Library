@@ -1,0 +1,76 @@
+/* ---------------------------------------------------------------------------
+   TOGGLE / SWITCH
+   --------------------------------------------------------------------------- */
+
+.toggle-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.toggle {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  appearance: none;
+  background: var(--color-neutral-300);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-default);
+}
+
+.toggle::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: var(--color-neutral-0);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--duration-fast) var(--ease-default);
+}
+
+.toggle:hover,
+.toggle.toggle--hover {
+  background: var(--color-neutral-400);
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+.toggle:checked {
+  background: var(--color-primary-500);
+}
+
+.toggle:checked::after {
+  transform: translateX(20px);
+}
+
+.toggle:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.toggle--sm {
+  width: 36px;
+  height: 20px;
+}
+
+.toggle--sm::after {
+  width: 16px;
+  height: 16px;
+}
+
+.toggle--sm:checked::after {
+  transform: translateX(16px);
+}
+
+.toggle-label {
+  font-size: var(--text-base);
+  color: var(--color-neutral-700);
+  user-select: none;
+}

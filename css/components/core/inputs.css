@@ -1,0 +1,119 @@
+/* ---------------------------------------------------------------------------
+   INPUTS
+   --------------------------------------------------------------------------- */
+
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.input-label {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-neutral-700);
+}
+
+.input-label--required::after {
+  content: ' *';
+  color: var(--color-error-500);
+}
+
+.input {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-sans);
+  font-size: var(--text-base);
+  color: var(--color-neutral-800);
+  background: var(--color-neutral-0);
+  border: var(--border-width-thin) solid var(--color-neutral-300);
+  border-radius: var(--radius-md);
+  transition: all var(--duration-fast) var(--ease-default);
+}
+
+.input::placeholder {
+  color: var(--color-neutral-400);
+}
+
+.input:hover,
+.input.input--hover {
+  border-color: var(--color-neutral-400);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 3px var(--color-primary-100);
+}
+
+.input:disabled {
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-400);
+  cursor: not-allowed;
+}
+
+/* Input with icon */
+.input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-group .input {
+  padding-left: var(--space-10);
+}
+
+.input-group--right .input {
+  padding-left: var(--space-3);
+  padding-right: var(--space-10);
+}
+
+.input-icon {
+  position: absolute;
+  left: var(--space-3);
+  color: var(--color-neutral-400);
+  pointer-events: none;
+}
+
+.input-group--right .input-icon {
+  left: auto;
+  right: var(--space-3);
+}
+
+/* Input states */
+.input--error {
+  border-color: var(--color-error-500);
+}
+
+.input--error:focus {
+  box-shadow: 0 0 0 3px var(--color-error-100);
+}
+
+.input--success {
+  border-color: var(--color-success-500);
+}
+
+.input--success:focus {
+  box-shadow: 0 0 0 3px var(--color-success-100);
+}
+
+.input-hint {
+  font-size: var(--text-xs);
+  color: var(--color-neutral-500);
+}
+
+.input-error {
+  font-size: var(--text-xs);
+  color: var(--color-error-600);
+}
+
+/* Input sizes */
+.input--sm {
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--text-sm);
+}
+
+.input--lg {
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-md);
+}
