@@ -1290,6 +1290,26 @@ function initializeInspectorPanel() {
     return '.' + bemClasses[0];
   }
 
+  // --- Find All Matching Elements (for global live updates) ---
+  function findMatchingElements(selector, excludeElement) {
+    var previews = document.querySelectorAll('.component-card__preview');
+    var matches = [];
+    previews.forEach(function(preview) {
+      var isTagSelector = selector.indexOf('.') === -1;
+      var els = isTagSelector
+        ? preview.querySelectorAll(selector)
+        : preview.querySelectorAll(selector);
+      els.forEach(function(el) {
+        if (el !== excludeElement &&
+            !el.classList.contains('inspector__overlay') &&
+            !el.classList.contains('inspector__selected-outline')) {
+          matches.push(el);
+        }
+      });
+    });
+    return matches;
+  }
+
   // --- Override CSS Generation ---
   function generateOverridesCSS() {
     var lines = [];
@@ -1460,6 +1480,24 @@ function initializeInspectorPanel() {
       entry.element.style.removeProperty(entry.property);
     }
 
+    // Revert all matching sibling elements
+    var siblings = findMatchingElements(entry.selector, entry.element);
+    siblings.forEach(function(sib) {
+      var sibOriginals = inspectorState.modifiedElements.get(sib);
+      if (sibOriginals && entry.property in sibOriginals) {
+        var sibOrig = sibOriginals[entry.property];
+        if (sibOrig) {
+          sib.style.setProperty(entry.property, sibOrig);
+        } else {
+          sib.style.removeProperty(entry.property);
+        }
+        delete sibOriginals[entry.property];
+        if (Object.keys(sibOriginals).length === 0) {
+          inspectorState.modifiedElements.delete(sib);
+        }
+      }
+    });
+
     // Update pendingOverrides
     if (inspectorState.pendingOverrides[entry.selector]) {
       if (entry.oldValue && entry.oldValue.indexOf('var(') === 0) {
@@ -1504,6 +1542,19 @@ function initializeInspectorPanel() {
     // Re-apply the change
     entry.element.style.setProperty(entry.property, entry.newValue);
 
+    // Re-apply to all matching sibling elements
+    var siblings = findMatchingElements(entry.selector, entry.element);
+    siblings.forEach(function(sib) {
+      if (!inspectorState.modifiedElements.has(sib)) {
+        inspectorState.modifiedElements.set(sib, {});
+      }
+      var sibOriginals = inspectorState.modifiedElements.get(sib);
+      if (!(entry.property in sibOriginals)) {
+        sibOriginals[entry.property] = sib.style.getPropertyValue(entry.property) || '';
+      }
+      sib.style.setProperty(entry.property, entry.newValue);
+    });
+
     // Track in pendingOverrides
     if (!inspectorState.pendingOverrides[entry.selector]) {
       inspectorState.pendingOverrides[entry.selector] = {};
@@ -1544,7 +1595,223 @@ function initializeInspectorPanel() {
       html += '</div>';
     }
     html += '</div>';
+    html += renderDomTree(el);
     selectionArea.innerHTML = html;
+
+    // Bind tree interactions
+    initTreeInteractions(selectionArea, el);
+  }
+
+  // --- DOM Tree ---
+  var treeCollapsed = false;
+  var treeNodeMap = [];
+
+  function filterClasses(classList) {
+    return Array.from(classList).filter(function(c) {
+      return !c.startsWith('inspector') &&
+             !c.startsWith('component-card') &&
+             !c.startsWith('preview-') &&
+             !c.startsWith('bg-picker');
+    });
+  }
+
+  // Derive a designer-friendly layer name from an element
+  function getLayerName(node) {
+    var tag = node.tagName.toLowerCase();
+    var cls = filterClasses(node.classList);
+
+    // Try to find the most meaningful BEM class
+    // Priority: block--modifier > block__element > block > tag
+    if (cls.length) {
+      // Find the most specific class (prefer BEM block or element)
+      var best = cls[0];
+      for (var i = 0; i < cls.length; i++) {
+        if (cls[i].indexOf('--') !== -1 || cls[i].indexOf('__') !== -1) {
+          best = cls[i];
+          break;
+        }
+      }
+      // Convert BEM class to readable name: "card__header" → "Card Header", "btn--primary" → "Button Primary"
+      var name = best
+        .replace(/^\./, '')
+        .replace(/--/g, ' ')
+        .replace(/__/g, ' ')
+        .replace(/-/g, ' ')
+        .replace(/\b\w/g, function(c) { return c.toUpperCase(); });
+      // Expand common abbreviations
+      name = name
+        .replace(/\bBtn\b/g, 'Button')
+        .replace(/\bImg\b/g, 'Image')
+        .replace(/\bBg\b/g, 'Background')
+        .replace(/\bNav\b/g, 'Navigation')
+        .replace(/\bDesc\b/g, 'Description')
+        .replace(/\bSm\b/g, 'Small')
+        .replace(/\bLg\b/g, 'Large')
+        .replace(/\bXl\b/g, 'Extra Large');
+      return name;
+    }
+
+    // Fallback: use semantic tag names
+    var tagNames = {
+      'h1': 'Heading 1', 'h2': 'Heading 2', 'h3': 'Heading 3',
+      'h4': 'Heading 4', 'h5': 'Heading 5', 'h6': 'Heading 6',
+      'p': 'Text', 'span': 'Text', 'a': 'Link',
+      'img': 'Image', 'svg': 'Icon', 'i': 'Icon',
+      'ul': 'List', 'ol': 'List', 'li': 'List Item',
+      'input': 'Input', 'textarea': 'Text Area', 'select': 'Select',
+      'button': 'Button', 'label': 'Label',
+      'table': 'Table', 'thead': 'Table Head', 'tbody': 'Table Body',
+      'tr': 'Table Row', 'th': 'Table Header', 'td': 'Table Cell',
+      'nav': 'Navigation', 'header': 'Header', 'footer': 'Footer',
+      'section': 'Section', 'article': 'Article', 'aside': 'Aside',
+      'main': 'Main', 'form': 'Form', 'fieldset': 'Field Set',
+      'div': 'Frame'
+    };
+    return tagNames[tag] || tag.charAt(0).toUpperCase() + tag.slice(1);
+  }
+
+  // Pick a Lucide icon name based on the element type
+  function getLayerIcon(node) {
+    var tag = node.tagName.toLowerCase();
+    var cls = filterClasses(node.classList).join(' ');
+
+    if (tag === 'button' || cls.match(/\bbtn\b/)) return 'mouse-pointer-click';
+    if (tag === 'input' || tag === 'textarea' || tag === 'select' || cls.match(/\binput\b/)) return 'text-cursor-input';
+    if (tag === 'img' || tag === 'svg' || tag === 'picture') return 'image';
+    if (tag === 'i' || cls.match(/\bicon\b/)) return 'star';
+    if (tag === 'a' || cls.match(/\blink\b/)) return 'link';
+    if (/^h[1-6]$/.test(tag)) return 'type';
+    if (tag === 'p' || tag === 'span' || tag === 'label') return 'type';
+    if (tag === 'ul' || tag === 'ol' || cls.match(/\blist\b/)) return 'list';
+    if (tag === 'table' || cls.match(/\btable\b/)) return 'table';
+    if (cls.match(/\bcard\b/)) return 'square';
+    if (cls.match(/\bmodal\b/)) return 'app-window';
+    if (cls.match(/\balert\b/) || cls.match(/\btoast\b/)) return 'bell';
+    if (cls.match(/\bbadge\b/) || cls.match(/\btag\b/)) return 'tag';
+    if (cls.match(/\bavatar\b/)) return 'user';
+    if (cls.match(/\btabs\b/) || cls.match(/\btab\b/)) return 'folder';
+    if (cls.match(/\bprogress\b/)) return 'bar-chart-3';
+    if (cls.match(/\bspinner\b/) || cls.match(/\bloader\b/)) return 'loader';
+    return 'layers';
+  }
+
+  function buildTreeHtml(node, selectedEl, depth) {
+    if (depth > 6) return '';
+    // Skip text nodes and non-element nodes entirely
+    if (node.nodeType !== Node.ELEMENT_NODE) return '';
+
+    var isSelected = node === selectedEl;
+    var nodeIndex = treeNodeMap.length;
+    treeNodeMap.push(node);
+
+    var children = Array.from(node.childNodes).filter(function(c) {
+      if (c.nodeType !== Node.ELEMENT_NODE) return false;
+      return !c.classList.contains('inspector__overlay') &&
+             !c.classList.contains('inspector__selected-outline');
+    });
+    var hasChildren = children.length > 0;
+    var selectedClass = isSelected ? ' inspector__tree-node-line--selected' : '';
+    var layerName = getLayerName(node);
+    var iconName = getLayerIcon(node);
+
+    var html = '<li class="inspector__tree-node">';
+    html += '<div class="inspector__tree-node-line' + selectedClass + '" data-tree-node data-tree-index="' + nodeIndex + '">';
+    if (hasChildren) {
+      html += '<span class="inspector__tree-expander"><i data-lucide="chevron-down"></i></span>';
+    } else {
+      html += '<span class="inspector__tree-expander inspector__tree-expander--empty"></span>';
+    }
+    html += '<i data-lucide="' + iconName + '" class="inspector__tree-icon"></i>';
+    html += '<span class="inspector__tree-label">' + escapeHtml(layerName) + '</span>';
+    html += '</div>';
+
+    if (hasChildren) {
+      html += '<ul class="inspector__tree-list">';
+      children.forEach(function(child) {
+        html += buildTreeHtml(child, selectedEl, depth + 1);
+      });
+      html += '</ul>';
+    }
+
+    html += '</li>';
+    return html;
+  }
+
+  function renderDomTree(selectedEl) {
+    treeNodeMap = [];
+    // Walk up to find the preview container root
+    var previewRoot = selectedEl.closest('.component-card__preview');
+    if (!previewRoot) return '';
+
+    // Get direct children of preview area (the top-level component nodes)
+    var topNodes = Array.from(previewRoot.childNodes).filter(function(c) {
+      if (c.nodeType === Node.TEXT_NODE) return c.textContent.trim().length > 0;
+      if (c.nodeType === Node.ELEMENT_NODE) {
+        return !c.classList.contains('inspector__overlay') &&
+               !c.classList.contains('bg-picker-container');
+      }
+      return false;
+    });
+
+    if (topNodes.length === 0) return '';
+
+    var toggleClass = treeCollapsed ? ' inspector__tree-toggle--collapsed' : '';
+    var bodyClass = treeCollapsed ? ' inspector__tree-body--collapsed' : '';
+
+    var html = '<div class="inspector__tree">';
+    html += '<button class="inspector__tree-toggle' + toggleClass + '" data-tree-toggle>';
+    html += '<i data-lucide="chevron-down"></i>';
+    html += 'DOM Structure';
+    html += '</button>';
+    html += '<div class="inspector__tree-body' + bodyClass + '">';
+    html += '<ul class="inspector__tree-list">';
+    topNodes.forEach(function(node) {
+      html += buildTreeHtml(node, selectedEl, 0);
+    });
+    html += '</ul>';
+    html += '</div>';
+    html += '</div>';
+
+    return html;
+  }
+
+  function initTreeInteractions(container, selectedEl) {
+    // Toggle tree collapse
+    var toggleBtn = container.querySelector('[data-tree-toggle]');
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', function() {
+        treeCollapsed = !treeCollapsed;
+        toggleBtn.classList.toggle('inspector__tree-toggle--collapsed');
+        var body = container.querySelector('.inspector__tree-body');
+        if (body) body.classList.toggle('inspector__tree-body--collapsed');
+      });
+    }
+
+    // Click on tree nodes to expand/collapse or select element
+    var nodeLines = container.querySelectorAll('[data-tree-node]');
+    nodeLines.forEach(function(line) {
+      line.addEventListener('click', function(e) {
+        var expander = line.querySelector('.inspector__tree-expander:not(.inspector__tree-expander--empty)');
+
+        // If clicking the expander chevron, toggle children
+        if (expander && e.target.closest('.inspector__tree-expander')) {
+          var parentLi = line.closest('.inspector__tree-node');
+          var childList = parentLi.querySelector('.inspector__tree-list');
+          if (childList) {
+            childList.style.display = childList.style.display === 'none' ? '' : 'none';
+            expander.classList.toggle('inspector__tree-expander--collapsed');
+          }
+          return;
+        }
+
+        // Otherwise, select the corresponding DOM element
+        var index = line.getAttribute('data-tree-index');
+        if (index !== null && treeNodeMap[index]) {
+          var targetEl = treeNodeMap[index];
+          selectElementFromTree(targetEl, line);
+        }
+      });
+    });
   }
 
   function renderEmptyState() {
@@ -2184,6 +2451,24 @@ function initializeInspectorPanel() {
       element.style.removeProperty(property);
     }
 
+    // Revert all matching sibling elements
+    var siblings = findMatchingElements(selector, element);
+    siblings.forEach(function(sib) {
+      var sibOriginals = inspectorState.modifiedElements.get(sib);
+      if (sibOriginals && property in sibOriginals) {
+        var sibOrig = sibOriginals[property];
+        if (sibOrig) {
+          sib.style.setProperty(property, sibOrig);
+        } else {
+          sib.style.removeProperty(property);
+        }
+        delete sibOriginals[property];
+        if (Object.keys(sibOriginals).length === 0) {
+          inspectorState.modifiedElements.delete(sib);
+        }
+      }
+    });
+
     // Push undo entry for the reset itself (so the reset is undoable)
     pushUndo(element, property, currentValue, originalValue, selector);
 
@@ -2346,6 +2631,19 @@ function initializeInspectorPanel() {
     // Apply inline style
     element.style.setProperty(property, tokenValue);
 
+    // Apply to all matching elements across preview areas (live global update)
+    var siblings = findMatchingElements(selector, element);
+    siblings.forEach(function(sib) {
+      if (!inspectorState.modifiedElements.has(sib)) {
+        inspectorState.modifiedElements.set(sib, {});
+      }
+      var sibOriginals = inspectorState.modifiedElements.get(sib);
+      if (!(property in sibOriginals)) {
+        sibOriginals[property] = sib.style.getPropertyValue(property) || '';
+      }
+      sib.style.setProperty(property, tokenValue);
+    });
+
     // Track in pending overrides
     if (!inspectorState.pendingOverrides[selector]) {
       inspectorState.pendingOverrides[selector] = {};
@@ -2376,6 +2674,49 @@ function initializeInspectorPanel() {
     if (searchInput) searchInput.value = '';
 
     renderSelectionInfo(el);
+    renderProperties(el);
+    refreshLucideIcons();
+  }
+
+  // Select from tree without rebuilding the tree
+  function selectElementFromTree(el, clickedLine) {
+    if (el === inspectorState.selectedElement) return;
+
+    // Update outline on actual component
+    if (inspectorState.selectedElement) {
+      inspectorState.selectedElement.classList.remove('inspector__selected-outline');
+    }
+    inspectorState.selectedElement = el;
+    el.classList.add('inspector__selected-outline');
+
+    // Update tag + classes info at the top (without touching the tree)
+    var infoEl = selectionArea.querySelector('.inspector__selection-info');
+    if (infoEl) {
+      var classes = Array.from(el.classList).filter(function(c) {
+        return !c.startsWith('inspector');
+      });
+      var html = '<span class="inspector__selection-tag">&lt;' + el.tagName.toLowerCase() + '&gt;</span>';
+      if (classes.length) {
+        html += '<div class="inspector__selection-classes">';
+        classes.forEach(function(c) {
+          html += '<span class="inspector__selection-class">.' + c + '</span>';
+        });
+        html += '</div>';
+      }
+      infoEl.innerHTML = html;
+    }
+
+    // Move highlight in the tree
+    var prevSelected = selectionArea.querySelectorAll('.inspector__tree-node-line--selected');
+    prevSelected.forEach(function(node) {
+      node.classList.remove('inspector__tree-node-line--selected');
+    });
+    if (clickedLine) {
+      clickedLine.classList.add('inspector__tree-node-line--selected');
+    }
+
+    // Clear search and re-render properties
+    if (searchInput) searchInput.value = '';
     renderProperties(el);
     refreshLucideIcons();
   }
