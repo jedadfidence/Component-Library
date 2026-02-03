@@ -703,6 +703,21 @@ function initializeComponentCollapse() {
 
     if (!header) return;
 
+    // Wrap all cards in a body container for smooth collapse animation
+    var cards = section.querySelectorAll(':scope > .component-card');
+    if (cards.length > 0) {
+      var body = document.createElement('div');
+      body.className = 'component-section__body';
+      var inner = document.createElement('div');
+      inner.className = 'component-section__body-inner';
+      // Insert body wrapper after header
+      header.after(body);
+      body.appendChild(inner);
+      cards.forEach(function(card) {
+        inner.appendChild(card);
+      });
+    }
+
     // Create collapse button using btn component
     const collapseBtn = document.createElement('button');
     collapseBtn.className = 'btn btn--ghost btn--icon btn--sm component-section__collapse';

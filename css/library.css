@@ -526,8 +526,23 @@ body {
   transform: rotate(-90deg);
 }
 
-.component-section--collapsed .component-card {
-  display: none;
+/* Animated collapse body using CSS grid row trick */
+.component-section__body {
+  display: grid;
+  grid-template-rows: 1fr;
+  overflow: hidden;
+  transition: grid-template-rows var(--duration-slow) var(--ease-default),
+              opacity var(--duration-normal) var(--ease-default);
+  opacity: 1;
+}
+
+.component-section--collapsed .component-section__body {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+
+.component-section__body-inner {
+  overflow: hidden;
 }
 
 /* Preview area */
