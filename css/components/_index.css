@@ -44,3 +44,9 @@
 @import url('./feedback/modal.css');
 @import url('./feedback/tooltip.css');
 @import url('./feedback/loaders.css');
+
+/* ==========================================================================
+   5. TOOLS
+   ========================================================================== */
+
+@import url('./inspector/inspector.css');

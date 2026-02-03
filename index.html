@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/components/_index.css">
   <link rel="stylesheet" href="css/library.css">
+  <link rel="stylesheet" href="css/overrides.css">
   <!-- Prism.js syntax highlighting -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css">
@@ -169,6 +170,10 @@
         <button class="btn btn--ghost btn--sm" id="collapse-all-btn">
           <i data-lucide="chevrons-down-up"></i>
           <span>Collapse All</span>
+        </button>
+        <button class="btn btn--ghost btn--sm" id="inspector-toggle" title="Toggle Inspector Panel">
+          <i data-lucide="scan-search"></i>
+          <span>Inspector</span>
         </button>
       </div>
 
@@ -3332,6 +3337,62 @@ closeModal('modal-id');</code></pre>
       </section>
 
     </main>
+
+    <!-- Inspector Panel -->
+    <aside class="inspector" id="inspector-panel">
+      <div class="inspector__header">
+        <div class="inspector__header-title">
+          <i data-lucide="scan-search"></i>
+          <h3>Inspector</h3>
+        </div>
+        <div class="inspector__header-actions">
+          <button class="btn btn--ghost btn--icon btn--sm" id="inspector-close" title="Close Inspector">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="inspector__selection" id="inspector-selection">
+        <div class="inspector__empty-state">
+          <i data-lucide="mouse-pointer-click"></i>
+          <p>Click an element inside a preview area to inspect it</p>
+        </div>
+      </div>
+
+      <div class="inspector__search" id="inspector-search">
+        <div class="inspector__search-wrapper">
+          <i data-lucide="search" class="inspector__search-icon"></i>
+          <input type="text" class="inspector__search-input" id="inspector-search-input" placeholder="Search properties..." />
+        </div>
+      </div>
+
+      <div class="inspector__properties" id="inspector-properties"></div>
+
+      <div class="inspector__footer">
+        <div class="inspector__changes-count">
+          <span class="badge badge--primary" id="inspector-changes-badge">0</span>
+          <span>changes</span>
+        </div>
+        <div class="inspector__footer-actions">
+          <div class="inspector__undo-actions">
+            <button class="btn btn--ghost btn--icon btn--sm" id="inspector-undo" title="Undo (Cmd+Z)" disabled>
+              <i data-lucide="undo-2"></i>
+            </button>
+            <button class="btn btn--ghost btn--icon btn--sm" id="inspector-redo" title="Redo (Cmd+Shift+Z)" disabled>
+              <i data-lucide="redo-2"></i>
+            </button>
+          </div>
+          <button class="btn btn--ghost btn--sm" id="inspector-reset" title="Reset all changes">
+            <i data-lucide="rotate-ccw"></i>
+            Reset
+          </button>
+          <button class="btn btn--primary btn--sm" id="inspector-export" title="Export overrides.css">
+            <i data-lucide="download"></i>
+            Export CSS
+          </button>
+        </div>
+      </div>
+    </aside>
   </div>
 
   <!-- Modal for demo -->
