@@ -2176,6 +2176,114 @@
           <h2 class="component-section__title">Tables</h2>
         </div>
 
+        <div class="component-card" id="table-tabs">
+          <div class="component-card__header">
+            <h3 class="component-card__title">Table Tabs</h3>
+            <div class="component-card__actions">
+              <button class="code-toggle-btn">
+                <i data-lucide="code"></i>
+                Show Code
+              </button>
+            </div>
+          </div>
+          <div class="component-card__preview">
+            <div class="table-tabs">
+              <div class="table-tab">
+                <span class="table-tab__label">Campaign</span>
+                <div class="table-tab__filter">
+                  <span class="table-tab__filter-text">3 selected</span>
+                  <button class="table-tab__filter-close">
+                    <svg viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path d="M1 1L7 7M7 1L1 7"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="component-card__code">
+            <div class="code-editor">
+              <!-- HTML Panel -->
+              <div class="code-editor__panel">
+                <div class="code-editor__panel-header">
+                  <span class="code-editor__dot code-editor__dot--html"></span>
+                  <span class="code-editor__lang">HTML</span>
+                  <button class="copy-btn">
+                    <i data-lucide="copy"></i>
+                    Copy
+                  </button>
+                </div>
+                <div class="code-editor__panel-body">
+                  <pre class="line-numbers"><code class="language-markup">&lt;!-- Place above table-container --&gt;
+&lt;div class="table-tabs"&gt;
+  &lt;div class="table-tab"&gt;
+    &lt;span class="table-tab__label"&gt;Campaign&lt;/span&gt;
+    &lt;div class="table-tab__filter"&gt;
+      &lt;span class="table-tab__filter-text"&gt;3 selected&lt;/span&gt;
+      &lt;button class="table-tab__filter-close"&gt;
+        &lt;svg viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"&gt;
+          &lt;path d="M1 1L7 7M7 1L1 7"/&gt;
+        &lt;/svg&gt;
+      &lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="table-container"&gt;
+  &lt;!-- table content --&gt;
+&lt;/div&gt;</code></pre>
+                </div>
+              </div>
+              <!-- CSS Panel -->
+              <div class="code-editor__panel">
+                <div class="code-editor__panel-header">
+                  <span class="code-editor__dot code-editor__dot--css"></span>
+                  <span class="code-editor__lang">CSS</span>
+                  <button class="copy-btn">
+                    <i data-lucide="copy"></i>
+                    Copy
+                  </button>
+                </div>
+                <div class="code-editor__panel-body">
+                  <pre class="line-numbers"><code class="language-css">.table-tabs {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.table-tab {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 250px;
+  height: 50px;
+  padding: 0 var(--space-4);
+  background: #F5F9FF;
+  border: 1px solid var(--color-primary-100);
+  border-bottom: none;
+  border-radius: 16px 16px 0 0;
+}
+
+.table-tab__label {
+  flex: 1;
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  color: var(--color-primary-800);
+}
+
+.table-tab__filter {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  height: 25px;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-primary-50);
+  border-radius: var(--radius-full);
+}</code></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="component-card" id="table-default">
           <div class="component-card__header">
             <h3 class="component-card__title">Default Table</h3>
@@ -2187,38 +2295,82 @@
             </div>
           </div>
           <div class="component-card__preview">
-            <div class="table-container">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>Campaign</th>
-                    <th>Platform</th>
-                    <th>Status</th>
-                    <th>Budget</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Summer Sale 2024</td>
-                    <td>Meta</td>
-                    <td><span class="badge badge--success"><span class="badge__dot"></span>Active</span></td>
-                    <td>$5,000</td>
-                  </tr>
-                  <tr>
-                    <td>Brand Awareness</td>
-                    <td>Google</td>
-                    <td><span class="badge badge--warning"><span class="badge__dot"></span>Pending</span></td>
-                    <td>$3,200</td>
-                  </tr>
-                  <tr>
-                    <td>Holiday Promo</td>
-                    <td>TikTok</td>
-                    <td><span class="badge badge--default"><span class="badge__dot"></span>Draft</span></td>
-                    <td>$8,500</td>
-                  </tr>
-                </tbody>
-              </table>
+            <div class="preview-interactive">
+              <span class="preview-interactive__label">Show table tabs</span>
+              <div class="preview-interactive__component">
+                <label class="toggle-wrapper">
+                  <input type="checkbox" class="toggle" id="table-tabs-toggle">
+                </label>
+              </div>
             </div>
+            <div class="table-with-tabs" id="table-with-tabs-demo">
+              <div class="table-tabs" id="demo-table-tabs" style="display: none;">
+                <div class="table-tab">
+                  <span class="table-tab__label">Account</span>
+                </div>
+                <div class="table-tab">
+                  <span class="table-tab__label">Campaign</span>
+                  <div class="table-tab__filter">
+                    <span class="table-tab__filter-text">3 selected</span>
+                    <button class="table-tab__filter-close">
+                      <svg viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M1 1L7 7M7 1L1 7"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="table-tab">
+                  <span class="table-tab__label">Ad Set</span>
+                </div>
+              </div>
+              <div class="table-container" id="demo-table-container">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Campaign</th>
+                      <th>Platform</th>
+                      <th>Status</th>
+                      <th>Budget</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Summer Sale 2024</td>
+                      <td>Meta</td>
+                      <td><span class="badge badge--success"><span class="badge__dot"></span>Active</span></td>
+                      <td>$5,000</td>
+                    </tr>
+                    <tr>
+                      <td>Brand Awareness</td>
+                      <td>Google</td>
+                      <td><span class="badge badge--warning"><span class="badge__dot"></span>Pending</span></td>
+                      <td>$3,200</td>
+                    </tr>
+                    <tr>
+                      <td>Holiday Promo</td>
+                      <td>TikTok</td>
+                      <td><span class="badge badge--default"><span class="badge__dot"></span>Draft</span></td>
+                      <td>$8,500</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <script>
+              document.getElementById('table-tabs-toggle').addEventListener('change', function() {
+                const tabs = document.getElementById('demo-table-tabs');
+                const tableContainer = document.getElementById('demo-table-container');
+                if (this.checked) {
+                  tabs.style.display = 'flex';
+                  tableContainer.style.borderTopLeftRadius = '0';
+                  tableContainer.style.borderTopRightRadius = '0';
+                } else {
+                  tabs.style.display = 'none';
+                  tableContainer.style.borderTopLeftRadius = '';
+                  tableContainer.style.borderTopRightRadius = '';
+                }
+              });
+            </script>
           </div>
           <div class="component-card__code">
             <div class="code-editor">

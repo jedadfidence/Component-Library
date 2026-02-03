@@ -47,3 +47,95 @@
 .table--compact td {
   padding: var(--space-2) var(--space-3);
 }
+
+/* ---------------------------------------------------------------------------
+   TABLE WITH TABS - wrapper for tabs + table
+   --------------------------------------------------------------------------- */
+
+.table-with-tabs {
+  display: flex;
+  flex-direction: column;
+}
+
+.table-with-tabs .table-container {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   TABLE TABS - for switching between table views
+   --------------------------------------------------------------------------- */
+
+.table-tabs {
+  display: flex;
+  gap: var(--space-1);
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Hide scrollbar but keep functionality */
+.table-tabs::-webkit-scrollbar {
+  height: 0;
+}
+
+.table-tab {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 150px;
+  height: 50px;
+  padding: 0 var(--space-4);
+  background: #F5F9FF;
+  border: 1px solid var(--color-primary-100);
+  border-bottom: none;
+  border-radius: 16px 16px 0 0;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.table-tab__label {
+  flex: 1;
+  font-family: 'Poppins', var(--font-family-sans);
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  line-height: 16px;
+  color: var(--color-primary-800);
+}
+
+.table-tab__filter {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  height: 25px;
+  padding: var(--space-1) var(--space-2);
+  background: transparent;
+  border: 1px solid var(--color-primary-50);
+  border-radius: var(--radius-full);
+}
+
+.table-tab__filter-text {
+  font-family: 'Poppins', var(--font-family-sans);
+  font-size: 10px;
+  font-weight: var(--font-medium);
+  line-height: 13px;
+  color: var(--color-primary-800);
+}
+
+.table-tab__filter-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-primary-800);
+}
+
+.table-tab__filter-close svg {
+  width: 8px;
+  height: 8px;
+}
