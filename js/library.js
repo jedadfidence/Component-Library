@@ -536,6 +536,71 @@ function initializeGlobalBackgroundPicker() {
    COLOR SWATCH COPY
    --------------------------------------------------------------------------- */
 
+function spawnConfetti(x, y, color) {
+  var count = 30;
+  var defaults = {
+    colors: [color, '#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96E6A1'],
+    shapes: ['circle', 'square'],
+    gravity: 0.8,
+    spread: 360,
+    drift: 0
+  };
+
+  for (var i = 0; i < count; i++) {
+    var particle = document.createElement('div');
+    var size = Math.random() * 8 + 4;
+    var shape = defaults.shapes[Math.floor(Math.random() * defaults.shapes.length)];
+    var particleColor = defaults.colors[Math.floor(Math.random() * defaults.colors.length)];
+    var angle = (Math.random() * Math.PI * 2);
+    var velocity = Math.random() * 120 + 60;
+    var vx = Math.cos(angle) * velocity;
+    var vy = Math.sin(angle) * velocity;
+    var rotation = Math.random() * 360;
+    var rotationSpeed = (Math.random() - 0.5) * 720;
+
+    particle.style.cssText =
+      'position:fixed;pointer-events:none;z-index:99999;' +
+      'width:' + size + 'px;height:' + size + 'px;' +
+      'background:' + particleColor + ';' +
+      'border-radius:' + (shape === 'circle' ? '50%' : '2px') + ';' +
+      'left:' + x + 'px;top:' + y + 'px;' +
+      'opacity:1;';
+
+    document.body.appendChild(particle);
+    animateConfettiParticle(particle, x, y, vx, vy, rotation, rotationSpeed, defaults.gravity);
+  }
+}
+
+function animateConfettiParticle(el, startX, startY, vx, vy, rot, rotSpeed, gravity) {
+  var start = null;
+  var duration = 1000;
+  var px = 0;
+  var py = 0;
+
+  function step(timestamp) {
+    if (!start) start = timestamp;
+    var elapsed = timestamp - start;
+    var t = elapsed / duration;
+
+    if (t >= 1) {
+      if (el.parentNode) el.parentNode.removeChild(el);
+      return;
+    }
+
+    px = vx * t;
+    py = vy * t + 0.5 * gravity * 800 * t * t;
+    var opacity = 1 - t;
+    var currentRot = rot + rotSpeed * t;
+
+    el.style.transform = 'translate(' + px + 'px, ' + py + 'px) rotate(' + currentRot + 'deg)';
+    el.style.opacity = opacity;
+
+    requestAnimationFrame(step);
+  }
+
+  requestAnimationFrame(step);
+}
+
 function initializeColorSwatchCopy() {
   const swatches = document.querySelectorAll('.color-swatch');
 
@@ -547,22 +612,25 @@ function initializeColorSwatchCopy() {
       if (!hex) return;
 
       const text = hex.textContent;
+      var colorEl = swatch.querySelector('.color-swatch__color');
+      var swatchColor = colorEl ? getComputedStyle(colorEl).backgroundColor : text;
 
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text).then(function() {
+          spawnConfetti(e.clientX, e.clientY, swatchColor);
           showHexCopyFeedback(hex, text);
         }).catch(function(err) {
           console.error('Clipboard API failed:', err);
-          fallbackHexCopy(text, hex);
+          fallbackHexCopy(text, hex, e, swatchColor);
         });
       } else {
-        fallbackHexCopy(text, hex);
+        fallbackHexCopy(text, hex, e, swatchColor);
       }
     });
   });
 }
 
-function fallbackHexCopy(text, hex) {
+function fallbackHexCopy(text, hex, e, swatchColor) {
   const textarea = document.createElement('textarea');
   textarea.value = text;
   textarea.style.position = 'fixed';
@@ -571,6 +639,7 @@ function fallbackHexCopy(text, hex) {
   textarea.select();
   try {
     document.execCommand('copy');
+    if (e && swatchColor) spawnConfetti(e.clientX, e.clientY, swatchColor);
     showHexCopyFeedback(hex, text);
   } catch (err) {
     console.error('Fallback copy failed:', err);
